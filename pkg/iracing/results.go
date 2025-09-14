@@ -51,3 +51,17 @@ func (s *ResultsService) SeasonResults(ctx context.Context, req *types.ResultsSe
 
 	return &infoResp, respData, nil
 }
+
+func (s *ResultsService) SearchHosted(ctx context.Context, req *types.ResultsSearchHostedReq) ([]types.ResultsSearchHostedResp, *http.Response, error) {
+	path := "/data/results/search_series"
+	var infoResp []types.ResultsSearchHostedResp
+
+	params, _ := query.Values(req)
+
+	respData, err := GetRessourceChunks(ctx, s.client, path, params, req.ChunkReq.Rows, &infoResp)
+	if err != nil {
+		return nil, respData, err
+	}
+
+	return infoResp, respData, nil
+}

@@ -33,7 +33,10 @@ func main() {
 	// lookupLicenses(client, ctx)
 	// getResultsGet(client, ctx, 78354169)
 	// getSeriesSeasons(client, ctx)
-	getStatsSeries(client, ctx)
+	// getStatsSeries(client, ctx)
+	// getDriverStats(client, ctx)
+	getHostedCombinedSessions(client, ctx)
+	getHostedSessions(client, ctx)
 
 }
 
@@ -127,6 +130,33 @@ func getStatsSeries(c *iracing.Client, ctx context.Context) {
 		Official: true,
 	}
 	results, _, err := c.SeriesService.StatsSeries(ctx, req)
+	if err != nil {
+		log.Fatalf("list results failed: %v", err)
+	}
+	log.Printf("results: %v", results)
+}
+
+func getDriverStats(c *iracing.Client, ctx context.Context) {
+
+	results, _, err := c.DriverStatsService.Oval(ctx)
+	if err != nil {
+		log.Fatalf("list results failed: %v", err)
+	}
+	log.Printf("results: %v", results[:10])
+}
+
+func getHostedCombinedSessions(c *iracing.Client, ctx context.Context) {
+	req := types.HostedCombinedSessionsReq{}
+	results, _, err := c.HostedService.CombinedSessions(ctx, req)
+	if err != nil {
+		log.Fatalf("list results failed: %v", err)
+	}
+	log.Printf("results: %v", results)
+}
+
+func getHostedSessions(c *iracing.Client, ctx context.Context) {
+	req := types.HostedSessionsReq{}
+	results, _, err := c.HostedService.Sessions(ctx, req)
 	if err != nil {
 		log.Fatalf("list results failed: %v", err)
 	}

@@ -1,9 +1,16 @@
 package types
 
-type ConstantsDivisionsReq struct {
+type ConstantsDivisionsResp struct {
+	Label string `json:"label"`
+	Value int    `json:"value"`
 }
 
-type ConstantsDivisionsResp struct {
+type ConstantsCategoriesResp struct {
+	Label string `json:"label"`
+	Value int    `json:"value"`
+}
+
+type ConstantsEventTypesResp struct {
 	Label string `json:"label"`
 	Value int    `json:"value"`
 }

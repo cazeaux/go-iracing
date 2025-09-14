@@ -13,7 +13,7 @@ func (s *CarService) Get(ctx context.Context, _ *types.CarsGetReq) ([]types.Cars
 	path := "/data/car/get"
 	var infoResp []types.CarsGetResp
 
-	respData, err := s.client.getRessource(ctx, path, nil, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, nil, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}
@@ -25,7 +25,7 @@ func (s *CarService) Assets(ctx context.Context, _ *types.CarsAssetsReq) (*types
 	path := "/data/car/assets"
 	var infoResp types.CarsAssetsResp
 
-	respData, err := s.client.getRessource(ctx, path, nil, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, nil, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}

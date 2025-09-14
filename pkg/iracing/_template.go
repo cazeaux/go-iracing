@@ -3,27 +3,22 @@ package iracing
 import (
 	"context"
 	"net/http"
-	"net/url"
-	"strconv"
+
+	"github.com/google/go-querystring/query"
 )
-
-// Track représente un circuit iRacing (exemple minimal).
-type TemplateReq struct {
-}
-
-type TemplateResp struct {
-}
 
 type TemplateService struct{ client *Client }
 
-func (s *TemplateService) Get(ctx context.Context, req *TemplateReq) (*TemplateResp, *http.Response, error) {
+func (s *TemplateService) Get(ctx context.Context, req *types.TemplateReq) (*types.TemplateResp, *http.Response, error) {
 	path := "/data/stats/member_recent_races"
-	var infoResp TemplateResp
+	var infoResp types.TemplateResp
 
-	params := url.Values{}
-	params.Add("cust_id", strconv.Itoa(req.CustID))
+	params, err := query.Values(req)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}

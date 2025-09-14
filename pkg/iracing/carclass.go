@@ -13,7 +13,7 @@ func (s *CarClassService) Get(ctx context.Context, _ *types.CarClassGetReq) ([]t
 	path := "/data/carclass/get"
 	var infoResp []types.CarClassGetResp
 
-	respData, err := s.client.getRessource(ctx, path, nil, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, nil, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}

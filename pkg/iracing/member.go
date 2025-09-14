@@ -14,7 +14,7 @@ func (s *MemberService) Info(ctx context.Context) (*types.MemberInfoResponse, *h
 	path := "/data/member/info"
 
 	var infoResp types.MemberInfoResponse
-	respData, err := s.client.getRessource(ctx, path, nil, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, nil, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}
@@ -30,7 +30,7 @@ func (s *MemberService) Get(ctx context.Context, req *types.MemberGetReq) (*type
 	}
 
 	var infoResp types.MemberGetResp
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}

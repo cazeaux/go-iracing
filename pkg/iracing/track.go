@@ -15,7 +15,7 @@ func (s *TrackService) Get(ctx context.Context, _ *types.TrackGetReq) ([]types.T
 	path := "/data/track/get"
 	var infoResp []types.TrackGetResp
 
-	respData, err := s.client.getRessource(ctx, path, nil, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, nil, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}

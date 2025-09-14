@@ -19,7 +19,7 @@ func (s *StatsService) MemberRecentResult(ctx context.Context, req *types.StatsM
 	params := url.Values{}
 	params.Add("cust_id", strconv.Itoa(req.CustID))
 
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}
@@ -36,7 +36,7 @@ func (s *StatsService) MemberCareer(ctx context.Context, req *types.StatsMemberC
 	}
 
 	var infoResp types.StatsMemberCareerResp
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}
@@ -52,7 +52,7 @@ func (s *StatsService) MemberDivision(ctx context.Context, req *types.StatsMembe
 	}
 
 	var infoResp types.StatsMemberDivisionResp
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}
@@ -68,7 +68,7 @@ func (s *StatsService) MemberSummary(ctx context.Context, req *types.StatsMember
 	}
 
 	var infoResp types.StatsMemberSummaryResp
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}
@@ -84,7 +84,7 @@ func (s *StatsService) MemberYearly(ctx context.Context, req *types.StatsMemberY
 	}
 
 	var infoResp types.StatsMemberYearlyResp
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}

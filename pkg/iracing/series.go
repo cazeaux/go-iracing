@@ -16,7 +16,7 @@ func (s *SeriesService) Seasons(ctx context.Context, _ *types.SeriesSeasonsReq) 
 	path := "/data/series/seasons"
 	var infoResp []types.SeriesSeasonsResp
 
-	respData, err := s.client.getRessource(ctx, path, nil, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, nil, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}
@@ -33,7 +33,7 @@ func (s *SeriesService) StatsSeries(ctx context.Context, req *types.SeriesStatsS
 	}
 
 	var infoResp []types.SeriesStatsSeriesResp
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}

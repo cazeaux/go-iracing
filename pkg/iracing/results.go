@@ -30,7 +30,7 @@ func (s *ResultsService) Get(ctx context.Context, req *types.ResultsGetReq) (*ty
 
 	params, _ := query.Values(req)
 
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}
@@ -44,7 +44,7 @@ func (s *ResultsService) SeasonResults(ctx context.Context, req *types.ResultsSe
 
 	params, _ := query.Values(req)
 
-	respData, err := s.client.getRessource(ctx, path, params, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, params, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}

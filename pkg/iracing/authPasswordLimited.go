@@ -63,8 +63,6 @@ func (a *IrOauthService) ResetAuth() {
 }
 
 func (a *IrOauthService) IsTokenExpired() bool {
-	a.mu.Lock()
-	defer a.mu.Unlock()
 	return time.Now().After(a.tokenExpiryDate)
 }
 

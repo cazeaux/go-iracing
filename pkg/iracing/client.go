@@ -3,6 +3,7 @@ package iracing
 import (
 	"bytes"
 	"context"
+	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -47,7 +48,9 @@ type Client struct {
 	ConstantsDivisions *ConstantsService
 	LeagueService      *LeagueService
 	LookupService      *LookupService
-	SeriesService	   *SeriesService
+	SeriesService      *SeriesService
+	DriverStatsService *DriverStatsService
+	HostedService      *HostedService
 }
 
 // NewClient crée une nouvelle instance Client.
@@ -83,6 +86,8 @@ func NewClient(opts ...Option) (*Client, error) {
 	c.LeagueService = &LeagueService{client: c}
 	c.LookupService = &LookupService{client: c}
 	c.SeriesService = &SeriesService{client: c}
+	c.DriverStatsService = &DriverStatsService{client: c}
+	c.HostedService = &HostedService{client: c}
 	return c, nil
 }
 
@@ -122,20 +127,7 @@ func (c *Client) throttle(ctx context.Context) error {
 	return nil
 }
 
-// ErrorResponse représente une erreur JSON standardisée renvoyée par l'API.
-type ErrorResponse struct {
-	Status     int    `json:"status"`
-	Code       string `json:"code"`
-	Message    string `json:"message"`
-	RequestID  string `json:"request_id,omitempty"`
-	RetryAfter int    `json:"retry_after,omitempty"`
-}
-
-func (e *ErrorResponse) Error() string {
-	return fmt.Sprintf("iracing: status=%d code=%s message=%s", e.Status, e.Code, e.Message)
-}
-
-func (c *Client) getAwsRessource(ctx context.Context, url string, out any) (*http.Response, error) {
+func (c *Client) getAwsRessource(ctx context.Context, url string) (*http.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -146,19 +138,11 @@ func (c *Client) getAwsRessource(ctx context.Context, url string, out any) (*htt
 		return nil, err
 	}
 
-	if out != nil {
-		defer resp.Body.Close()
-		dec := json.NewDecoder(resp.Body)
-		if err := dec.Decode(out); err != nil && !errors.Is(err, io.EOF) {
-			return resp, err
-		}
-	}
 	return resp, nil
-
 }
 
 // do exécute une requête HTTP avec gestion de l'auth, du throttling et des retries.
-func (c *Client) do(ctx context.Context, method, path string, query url.Values, body any, out any) (*http.Response, error) {
+func (c *Client) do(ctx context.Context, method, path string, query url.Values, body any) (*http.Response, error) {
 	if err := c.throttle(ctx); err != nil {
 		return nil, err
 	}
@@ -212,13 +196,6 @@ func (c *Client) do(ctx context.Context, method, path string, query url.Values, 
 		}
 
 		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-			if out != nil {
-				defer resp.Body.Close()
-				dec := json.NewDecoder(resp.Body)
-				if err := dec.Decode(out); err != nil && !errors.Is(err, io.EOF) {
-					return resp, err
-				}
-			}
 			return resp, nil
 		}
 
@@ -243,13 +220,80 @@ func (c *Client) do(ctx context.Context, method, path string, query url.Values, 
 
 // get/do helpers
 func (c *Client) get(ctx context.Context, path string, query url.Values, out any) (*http.Response, error) {
-	return c.do(ctx, http.MethodGet, path, query, nil, out)
-}
-func (c *Client) post(ctx context.Context, path string, query url.Values, in, out any) (*http.Response, error) {
-	return c.do(ctx, http.MethodPost, path, query, in, out)
+	resp, err := c.do(ctx, http.MethodGet, path, query, nil)
+	if err != nil {
+		return resp, err
+	}
+	if out != nil {
+		defer resp.Body.Close()
+		dec := json.NewDecoder(resp.Body)
+		if err := dec.Decode(out); err != nil && !errors.Is(err, io.EOF) {
+			return resp, err
+		}
+	}
+	return resp, nil
+
 }
 
-func (c *Client) getRessource(ctx context.Context, path string, query url.Values, out any) (*http.Response, error) {
+func (c *Client) getCSV(ctx context.Context, path string, query url.Values, out *[][]string) (*http.Response, error) {
+	var csvData string
+	resp, err := c.do(ctx, http.MethodGet, path, query, nil)
+	if err != nil {
+		return resp, err
+	}
+	if out != nil {
+		r := csv.NewReader(strings.NewReader(csvData))
+		records, err := r.ReadAll()
+		if err != nil {
+			return resp, err
+		}
+		*out = records
+	}
+	return resp, nil
+}
+
+func (c *Client) post(ctx context.Context, path string, query url.Values, in, out any) (*http.Response, error) {
+	return c.do(ctx, http.MethodPost, path, query, in)
+}
+
+// getRessource helpers (JSON, CSV, Chunks)
+func (c *Client) getRessourceJSON(ctx context.Context, path string, query url.Values, out any) (*http.Response, error) {
+	resp, err := c.getRessource(ctx, path, query)
+	if err != nil {
+		return resp, err
+	}
+
+	if out != nil {
+		defer resp.Body.Close()
+		dec := json.NewDecoder(resp.Body)
+		if err := dec.Decode(out); err != nil && !errors.Is(err, io.EOF) {
+			return resp, err
+		}
+	}
+
+	return resp, nil
+}
+
+func (c *Client) getRessourceCSV(ctx context.Context, path string, query url.Values, out *[][]string) (*http.Response, error) {
+	resp, err := c.getRessource(ctx, path, query)
+	if err != nil {
+		return resp, err
+	}
+
+	if out != nil {
+		r := csv.NewReader(resp.Body)
+		records, err := r.ReadAll()
+		defer resp.Body.Close()
+		if err != nil {
+			return resp, err
+		}
+		*out = records
+	}
+
+	return resp, nil
+}
+
+func (c *Client) getRessource(ctx context.Context, path string, query url.Values) (*http.Response, error) {
 	var ressourceData types.RessourceLinkResp
 
 	respIR, err := c.get(ctx, path, query, &ressourceData)
@@ -260,7 +304,17 @@ func (c *Client) getRessource(ctx context.Context, path string, query url.Values
 	if respIR.StatusCode != http.StatusOK {
 		return respIR, fmt.Errorf("error on iracing query %v: %v", path, respIR.StatusCode)
 	}
-	return c.getAwsRessource(ctx, ressourceData.Link, &out)
+
+	respRes, err := c.getAwsRessource(ctx, ressourceData.Link)
+	if err != nil {
+		return respRes, err
+	}
+
+	if respRes.StatusCode != http.StatusOK {
+		return respRes, fmt.Errorf("error on aws ressource %v: %v", path, respRes.StatusCode)
+	}
+
+	return respRes, nil
 }
 
 func GetRessourceChunks[T any](ctx context.Context, c *Client, path string, query url.Values, rows int, out *[]T) (*http.Response, error) {
@@ -277,37 +331,6 @@ func GetRessourceChunks[T any](ctx context.Context, c *Client, path string, quer
 
 	return GetAwsRessourceChunks(ctx, c, &ressourceData.Data.ChunkInfo, rows, out)
 
-}
-
-// ----- Pagination générique -----
-
-type Page[T any] struct {
-	Items    []T    `json:"items"`
-	Next     string `json:"next,omitempty"` // URL ou cursor
-	Previous string `json:"previous,omitempty"`
-	Total    int    `json:"total,omitempty"`
-}
-
-// Pager itère sur toutes les pages d'un endpoint list.
-func Pager[T any](ctx context.Context, fetch func(ctx context.Context, cursor string) (Page[T], *http.Response, error)) ([]T, *http.Response, error) {
-	var (
-		all  []T
-		resp *http.Response
-		cur  string
-	)
-	for {
-		p, r, err := fetch(ctx, cur)
-		if err != nil {
-			return all, r, err
-		}
-		resp = r
-		all = append(all, p.Items...)
-		if p.Next == "" {
-			break
-		}
-		cur = p.Next
-	}
-	return all, resp, nil
 }
 
 func GetAwsRessourceChunks[T any](ctx context.Context, c *Client, chunkInfo *types.ChunkInfoType, rows int, out *[]T) (*http.Response, error) {

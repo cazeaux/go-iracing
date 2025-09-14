@@ -13,7 +13,7 @@ func (s *LookupService) Licenses(ctx context.Context, req *types.LookupLicensesR
 	path := "/data/lookup/licenses"
 	var infoResp []types.LookupLicensesResp
 
-	respData, err := s.client.getRessource(ctx, path, nil, &infoResp)
+	respData, err := s.client.getRessourceJSON(ctx, path, nil, &infoResp)
 	if err != nil {
 		return nil, respData, err
 	}

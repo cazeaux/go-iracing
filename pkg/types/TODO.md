@@ -17,3 +17,21 @@
 # /data/league/season_standings
 
 TeamStandings remains interface, lack of data
+
+# /data/lookup/get
+
+The API is not well documented
+
+# /data/member/awards
+
+```json
+{
+  "type": "member_awards",
+  "data": {
+    "success": true,
+    "cust_id": 394410,
+    "award_count": 176
+  },
+  "data_url": "https://scorpio-assets.s3.amazonaws.com/members/messaging-services/short_lived/awards/394410.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20250914T150131Z&X-Amz-SignedHeaders=host&X-Amz-Credential=AKIAUO6OO4A3WX3RTXUZ%2F20250914%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Expires=60&X-Amz-Signature=d6e61ae0216f5007e6907c30d6e4a11804fa2758067bdea280ff607c144f06f8"
+}
+```

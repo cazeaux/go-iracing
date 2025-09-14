@@ -51,6 +51,7 @@ type Client struct {
 	SeriesService      *SeriesService
 	DriverStatsService *DriverStatsService
 	HostedService      *HostedService
+	MemberService      *MemberService
 }
 
 // NewClient crée une nouvelle instance Client.
@@ -88,6 +89,7 @@ func NewClient(opts ...Option) (*Client, error) {
 	c.SeriesService = &SeriesService{client: c}
 	c.DriverStatsService = &DriverStatsService{client: c}
 	c.HostedService = &HostedService{client: c}
+	c.MemberService = &MemberService{client: c}
 	return c, nil
 }
 
@@ -274,6 +276,23 @@ func (c *Client) getRessourceJSON(ctx context.Context, path string, query url.Va
 	return resp, nil
 }
 
+func (c *Client) getRessourceDataJSON(ctx context.Context, path string, query url.Values, out any) (*http.Response, error) {
+	resp, err := c.getRessourceData(ctx, path, query)
+	if err != nil {
+		return resp, err
+	}
+
+	if out != nil {
+		defer resp.Body.Close()
+		dec := json.NewDecoder(resp.Body)
+		if err := dec.Decode(out); err != nil && !errors.Is(err, io.EOF) {
+			return resp, err
+		}
+	}
+
+	return resp, nil
+}
+
 func (c *Client) getRessourceCSV(ctx context.Context, path string, query url.Values, out *[][]string) (*http.Response, error) {
 	resp, err := c.getRessource(ctx, path, query)
 	if err != nil {
@@ -306,6 +325,30 @@ func (c *Client) getRessource(ctx context.Context, path string, query url.Values
 	}
 
 	respRes, err := c.getAwsRessource(ctx, ressourceData.Link)
+	if err != nil {
+		return respRes, err
+	}
+
+	if respRes.StatusCode != http.StatusOK {
+		return respRes, fmt.Errorf("error on aws ressource %v: %v", path, respRes.StatusCode)
+	}
+
+	return respRes, nil
+}
+
+func (c *Client) getRessourceData(ctx context.Context, path string, query url.Values) (*http.Response, error) {
+	var ressourceData types.RessourceDataLinkResp
+
+	respIR, err := c.get(ctx, path, query, &ressourceData)
+	if err != nil {
+		return respIR, err
+	}
+
+	if respIR.StatusCode != http.StatusOK {
+		return respIR, fmt.Errorf("error on iracing query %v: %v", path, respIR.StatusCode)
+	}
+
+	respRes, err := c.getAwsRessource(ctx, ressourceData.DataURL)
 	if err != nil {
 		return respRes, err
 	}

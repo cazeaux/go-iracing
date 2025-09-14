@@ -35,8 +35,9 @@ func main() {
 	// getSeriesSeasons(client, ctx)
 	// getStatsSeries(client, ctx)
 	// getDriverStats(client, ctx)
-	getHostedCombinedSessions(client, ctx)
-	getHostedSessions(client, ctx)
+	// getHostedCombinedSessions(client, ctx)
+	// getHostedSessions(client, ctx)
+	getMemberAwards(client, ctx)
 
 }
 
@@ -157,6 +158,15 @@ func getHostedCombinedSessions(c *iracing.Client, ctx context.Context) {
 func getHostedSessions(c *iracing.Client, ctx context.Context) {
 	req := types.HostedSessionsReq{}
 	results, _, err := c.HostedService.Sessions(ctx, req)
+	if err != nil {
+		log.Fatalf("list results failed: %v", err)
+	}
+	log.Printf("results: %v", results)
+}
+
+func getMemberAwards(c *iracing.Client, ctx context.Context) {
+	req := types.MemberAwardsReq{CustID: 394410}
+	results, _, err := c.MemberService.Awards(ctx, &req)
 	if err != nil {
 		log.Fatalf("list results failed: %v", err)
 	}

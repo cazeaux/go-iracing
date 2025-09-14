@@ -7,6 +7,11 @@ type RessourceLinkResp struct {
 	Expires time.Time `json:"expires"`
 }
 
+type RessourceDataLinkResp struct {
+	Type    string `json:"type"`
+	DataURL string `json:"data_url"`
+}
+
 type RessourceLinkChunksResp struct {
 	Type string `json:"type"`
 	Data struct {

@@ -16,31 +16,17 @@ type CommonElig struct {
 }
 
 type CommonAdmins struct {
-	CustID      int    `json:"cust_id"`
-	DisplayName string `json:"display_name"`
-	Helmet      struct {
-		Pattern    int    `json:"pattern"`
-		Color1     string `json:"color1"`
-		Color2     string `json:"color2"`
-		Color3     string `json:"color3"`
-		FaceType   int    `json:"face_type"`
-		HelmetType int    `json:"helmet_type"`
-	} `json:"helmet"`
+	CustID      int          `json:"cust_id"`
+	DisplayName string       `json:"display_name"`
+	Helmet      CommonHelmet `json:"helmet"`
 }
 
 type CommonOwner struct {
-	CustID      int    `json:"cust_id"`
-	DisplayName string `json:"display_name"`
-	Helmet      struct {
-		Pattern    int    `json:"pattern"`
-		Color1     string `json:"color1"`
-		Color2     string `json:"color2"`
-		Color3     string `json:"color3"`
-		FaceType   int    `json:"face_type"`
-		HelmetType int    `json:"helmet_type"`
-	} `json:"helmet"`
-	CarNumber interface{} `json:"car_number"`
-	NickName  interface{} `json:"nick_name"`
+	CustID      int          `json:"cust_id"`
+	DisplayName string       `json:"display_name"`
+	Helmet      CommonHelmet `json:"helmet"`
+	CarNumber   interface{}  `json:"car_number"`
+	NickName    interface{}  `json:"nick_name"`
 }
 
 type CommonCars struct {
@@ -67,16 +53,18 @@ type CommonFarm struct {
 }
 
 type CommonHost struct {
-	CustID      int    `json:"cust_id"`
-	DisplayName string `json:"display_name"`
-	Helmet      struct {
-		Pattern    int    `json:"pattern"`
-		Color1     string `json:"color1"`
-		Color2     string `json:"color2"`
-		Color3     string `json:"color3"`
-		FaceType   int    `json:"face_type"`
-		HelmetType int    `json:"helmet_type"`
-	} `json:"helmet"`
+	CustID      int          `json:"cust_id"`
+	DisplayName string       `json:"display_name"`
+	Helmet      CommonHelmet `json:"helmet"`
+}
+
+type CommonHelmet struct {
+	Pattern    int    `json:"pattern"`
+	Color1     string `json:"color1"`
+	Color2     string `json:"color2"`
+	Color3     string `json:"color3"`
+	FaceType   int    `json:"face_type"`
+	HelmetType int    `json:"helmet_type"`
 }
 
 type CommonTrack struct {
@@ -163,4 +151,22 @@ type CommonHeatSesInfo struct {
 	QualScoring                          int       `json:"qual_scoring"`
 	QualStyle                            int       `json:"qual_style"`
 	RaceStyle                            int       `json:"race_style"`
+}
+
+type CommonMemberLicense struct {
+	CategoryID    int     `json:"category_id"`
+	Category      string  `json:"category"`
+	CategoryName  string  `json:"category_name"`
+	LicenseLevel  int     `json:"license_level"`
+	SafetyRating  float64 `json:"safety_rating"`
+	Cpi           float64 `json:"cpi"`
+	Irating       int     `json:"irating"`
+	TtRating      int     `json:"tt_rating"`
+	MprNumRaces   int     `json:"mpr_num_races"`
+	Color         string  `json:"color"`
+	GroupName     string  `json:"group_name"`
+	GroupID       int     `json:"group_id"`
+	ProPromotable bool    `json:"pro_promotable"`
+	Seq           int     `json:"seq"`
+	MprNumTts     int     `json:"mpr_num_tts"`
 }

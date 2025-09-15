@@ -107,6 +107,50 @@ type CommonWeather struct {
 	WindValue               float64 `json:"wind_value"`
 }
 
+type CommonWeatherFull struct {
+	AllowFog        bool `json:"allow_fog"`
+	ForecastOptions struct {
+		AllowFog      bool  `json:"allow_fog"`
+		ForecastType  int   `json:"forecast_type"`
+		Precipitation int   `json:"precipitation"`
+		Skies         int   `json:"skies"`
+		StopPrecip    int   `json:"stop_precip"`
+		Temperature   int   `json:"temperature"`
+		WeatherSeed   int64 `json:"weather_seed"`
+		WindDir       int   `json:"wind_dir"`
+		WindSpeed     int   `json:"wind_speed"`
+	} `json:"forecast_options"`
+	PrecipOption            int    `json:"precip_option"`
+	RelHumidity             int    `json:"rel_humidity"`
+	SimulatedStartTime      string `json:"simulated_start_time"`
+	SimulatedTimeMultiplier int    `json:"simulated_time_multiplier"`
+	SimulatedTimeOffsets    []int  `json:"simulated_time_offsets"`
+	Skies                   int    `json:"skies"`
+	TempUnits               int    `json:"temp_units"`
+	TempValue               int    `json:"temp_value"`
+	TimeOfDay               int    `json:"time_of_day"`
+	TrackWater              int    `json:"track_water"`
+	Version                 int    `json:"version"`
+	WeatherSummary          struct {
+		MaxPrecipRate     float64 `json:"max_precip_rate"`
+		MaxPrecipRateDesc string  `json:"max_precip_rate_desc"`
+		PrecipChance      int     `json:"precip_chance"`
+		SkiesHigh         int     `json:"skies_high"`
+		SkiesLow          int     `json:"skies_low"`
+		TempHigh          float64 `json:"temp_high"`
+		TempLow           float64 `json:"temp_low"`
+		TempUnits         int     `json:"temp_units"`
+		WindDir           int     `json:"wind_dir"`
+		WindHigh          float64 `json:"wind_high"`
+		WindLow           float64 `json:"wind_low"`
+		WindUnits         int     `json:"wind_units"`
+	} `json:"weather_summary"`
+	WeatherURL string `json:"weather_url"`
+	WindDir    int    `json:"wind_dir"`
+	WindUnits  int    `json:"wind_units"`
+	WindValue  int    `json:"wind_value"`
+}
+
 type CommonHeatSesInfo struct {
 	ConsolationDeltaMaxFieldSize         int       `json:"consolation_delta_max_field_size"`
 	ConsolationDeltaSessionLaps          int       `json:"consolation_delta_session_laps"`
@@ -169,4 +213,22 @@ type CommonMemberLicense struct {
 	ProPromotable bool    `json:"pro_promotable"`
 	Seq           int     `json:"seq"`
 	MprNumTts     int     `json:"mpr_num_tts"`
+}
+
+type CommonSessTimeDescriptor struct {
+	DayOffset        []int  `json:"day_offset"`
+	FirstSessionTime string `json:"first_session_time"`
+	RepeatMinutes    int    `json:"repeat_minutes"`
+	Repeating        bool   `json:"repeating"`
+	SessionMinutes   int    `json:"session_minutes"`
+	StartDate        string `json:"start_date"`
+	SuperSession     bool   `json:"super_session"`
+}
+
+type CommonAllowedLicenses struct {
+	GroupName       string `json:"group_name"`
+	LicenseGroup    int    `json:"license_group"`
+	MaxLicenseLevel int    `json:"max_license_level"`
+	MinLicenseLevel int    `json:"min_license_level"`
+	ParentID        int    `json:"parent_id"`
 }

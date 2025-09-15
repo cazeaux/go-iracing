@@ -83,16 +83,10 @@ type ResultsGetReq struct {
 }
 
 type ResultsGetResp struct {
-	SubsessionID    int `json:"subsession_id"`
-	AllowedLicenses []struct {
-		GroupName       string `json:"group_name"`
-		LicenseGroup    int    `json:"license_group"`
-		MaxLicenseLevel int    `json:"max_license_level"`
-		MinLicenseLevel int    `json:"min_license_level"`
-		ParentID        int    `json:"parent_id"`
-	} `json:"allowed_licenses"`
-	AssociatedSubsessionIds []int `json:"associated_subsession_ids"`
-	CanProtest              bool  `json:"can_protest"`
+	SubsessionID            int                     `json:"subsession_id"`
+	AllowedLicenses         []CommonAllowedLicenses `json:"allowed_licenses"`
+	AssociatedSubsessionIds []int                   `json:"associated_subsession_ids"`
+	CanProtest              bool                    `json:"can_protest"`
 	CarClasses              []struct {
 		CarClassID      int    `json:"car_class_id"`
 		ShortName       string `json:"short_name"`

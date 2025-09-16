@@ -221,7 +221,7 @@ type SeriesGetResp struct {
 // Past Seasons
 
 type SeriesPastSeasonsReq struct {
-	SeriesID int `json:"series_id"`
+	SeriesID int `url:"series_id"`
 }
 type SeriesPastSeasonsResp struct {
 	Success bool `json:"success"`
@@ -281,9 +281,9 @@ type SeriesPastSeasonsResp struct {
 // Season List
 
 type SeriesSeasonListReq struct {
-	IncludeSeries bool `json:"include_series,omitempty"`
-	SeasonYear    int  `json:"season_year,omitempty"`
-	SeasonQuarter int  `json:"season_quarter,omitempty"`
+	IncludeSeries bool `url:"include_series,omitempty"`
+	SeasonYear    int  `url:"season_year,omitempty"`
+	SeasonQuarter int  `url:"season_quarter,omitempty"`
 }
 
 type SeriesSeasonListResp struct {
@@ -385,7 +385,7 @@ type SeriesSeasonListResp struct {
 // Season Schedule
 
 type SeriesSeasonScheduleReq struct {
-	SeasonID int `json:"season_id,omitempty"`
+	SeasonID int `url:"season_id,omitempty"`
 }
 type SeriesSeasonScheduleResp struct {
 	Success   bool `json:"success"`

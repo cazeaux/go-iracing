@@ -37,7 +37,9 @@ func main() {
 	// getDriverStats(client, ctx)
 	// getHostedCombinedSessions(client, ctx)
 	// getHostedSessions(client, ctx)
-	getMemberAwards(client, ctx)
+	// getMemberAwards(client, ctx)
+	// getSeasonQualifyResults(client, ctx)
+	getSeasonDriverStandings(client, ctx)
 
 }
 
@@ -167,6 +169,24 @@ func getHostedSessions(c *iracing.Client, ctx context.Context) {
 func getMemberAwards(c *iracing.Client, ctx context.Context) {
 	req := types.MemberAwardsReq{CustID: 394410}
 	results, _, err := c.MemberService.Awards(ctx, &req)
+	if err != nil {
+		log.Fatalf("list results failed: %v", err)
+	}
+	log.Printf("results: %v", results)
+}
+
+func getSeasonQualifyResults(c *iracing.Client, ctx context.Context) {
+	req := types.StatsSeasonQualifyResultsReq{CarClassID: 2708, SeasonID: 5420, RaceWeekNum: 1}
+	results, _, err := c.Stats.SeasonQualifyResults(ctx, &req)
+	if err != nil {
+		log.Fatalf("list results failed: %v", err)
+	}
+	log.Printf("results: %v", results)
+}
+
+func getSeasonDriverStandings(c *iracing.Client, ctx context.Context) {
+	req := types.StatsSeasonDriverStandingsReq{CarClassID: 2708, SeasonID: 5420, RaceWeekNum: 1}
+	results, _, err := c.Stats.SeasonDriverStandings(ctx, &req)
 	if err != nil {
 		log.Fatalf("list results failed: %v", err)
 	}

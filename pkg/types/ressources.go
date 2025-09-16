@@ -12,6 +12,10 @@ type RessourceDataLinkResp struct {
 	DataURL string `json:"data_url"`
 }
 
+type RessourceDataCsvUrlResp struct {
+	CsvURL string `json:"csv_url"`
+}
+
 type RessourceLinkChunksResp struct {
 	Type string `json:"type"`
 	Data struct {

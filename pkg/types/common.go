@@ -232,3 +232,7 @@ type CommonAllowedLicenses struct {
 	MinLicenseLevel int    `json:"min_license_level"`
 	ParentID        int    `json:"parent_id"`
 }
+
+type CommonRessourceCsvURL struct {
+	CsvURL string `json:"csv_url"`
+}

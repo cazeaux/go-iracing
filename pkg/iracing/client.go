@@ -162,7 +162,7 @@ func (c *Client) do(ctx context.Context, method, path string, query url.Values, 
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Accept", "application/json")
+	// req.Header.Set("Accept", "application/json")
 	if c.ua != "" {
 		req.Header.Set("User-Agent", c.ua)
 	}
@@ -237,23 +237,6 @@ func (c *Client) get(ctx context.Context, path string, query url.Values, out any
 
 }
 
-func (c *Client) getCSV(ctx context.Context, path string, query url.Values, out *[][]string) (*http.Response, error) {
-	var csvData string
-	resp, err := c.do(ctx, http.MethodGet, path, query, nil)
-	if err != nil {
-		return resp, err
-	}
-	if out != nil {
-		r := csv.NewReader(strings.NewReader(csvData))
-		records, err := r.ReadAll()
-		if err != nil {
-			return resp, err
-		}
-		*out = records
-	}
-	return resp, nil
-}
-
 func (c *Client) post(ctx context.Context, path string, query url.Values, in, out any) (*http.Response, error) {
 	return c.do(ctx, http.MethodPost, path, query, in)
 }
@@ -291,6 +274,23 @@ func (c *Client) getRessourceDataJSON(ctx context.Context, path string, query ur
 	}
 
 	return resp, nil
+}
+
+// Manages cases where IR API responds a ressource data where link provides an AWS data with a csv_url
+func (c *Client) getRessourceDataCsvURL(ctx context.Context, path string, query url.Values, out *[][]string) (*http.Response, error) {
+	resp, err := c.getRessource(ctx, path, query)
+	if err != nil {
+		return resp, err
+	}
+
+	var data types.RessourceDataCsvUrlResp
+	defer resp.Body.Close()
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(&data); err != nil && !errors.Is(err, io.EOF) {
+		return resp, err
+	}
+
+	return getCSV(ctx, c, data.CsvURL, out)
 }
 
 func (c *Client) getRessourceCSV(ctx context.Context, path string, query url.Values, out *[][]string) (*http.Response, error) {
@@ -402,7 +402,28 @@ func GetAwsRessourceChunks[T any](ctx context.Context, c *Client, chunkInfo *typ
 			return resp, err
 		}
 		*out = append(*out, outSlice...)
-
 	}
 	return nil, nil
+}
+
+func getCSV(ctx context.Context, c *Client, path string, out *[][]string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if out != nil {
+		r := csv.NewReader(resp.Body)
+		defer resp.Body.Close()
+		records, err := r.ReadAll()
+		if err != nil {
+			return resp, err
+		}
+		*out = records
+	}
+	return resp, nil
 }

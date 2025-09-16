@@ -146,3 +146,151 @@ type StatsMemberYearlyResp struct {
 	} `json:"stats"`
 	CustID int `json:"cust_id"`
 }
+
+// Members best
+
+type StatsMemberBestsReq struct {
+	CustID int `url:"cust_id,omitempty"`
+	CarID  int `url:"car_id,omitempty"`
+}
+
+type StatsMemberBestsResp struct {
+	CarsDriven []struct {
+		CarID   int    `json:"car_id"`
+		CarName string `json:"car_name"`
+	} `json:"cars_driven"`
+	Bests []struct {
+		Track struct {
+			ConfigName string `json:"config_name"`
+			TrackID    int    `json:"track_id"`
+			TrackName  string `json:"track_name"`
+		} `json:"track"`
+		EventType     string    `json:"event_type"`
+		BestLapTime   int       `json:"best_lap_time"`
+		SubsessionID  int       `json:"subsession_id"`
+		EndTime       time.Time `json:"end_time"`
+		SeasonYear    int       `json:"season_year"`
+		SeasonQuarter int       `json:"season_quarter"`
+	} `json:"bests"`
+	CustID int `json:"cust_id"`
+	CarID  int `json:"car_id"`
+}
+
+// Member recap
+
+type StatsMemberRecapReq struct {
+	CustID int `url:"cust_id,omitempty"`
+	Season int `url:"season,omitempty"`
+	Year   int `url:"year,omitempty"`
+}
+
+type StatsMemberRecapResp struct {
+	Year  int `json:"year"`
+	Stats struct {
+		Starts            int `json:"starts"`
+		Wins              int `json:"wins"`
+		Top5              int `json:"top5"`
+		AvgStartPosition  int `json:"avg_start_position"`
+		AvgFinishPosition int `json:"avg_finish_position"`
+		Laps              int `json:"laps"`
+		LapsLed           int `json:"laps_led"`
+		FavoriteCar       struct {
+			CarID    int    `json:"car_id"`
+			CarName  string `json:"car_name"`
+			CarImage string `json:"car_image"`
+		} `json:"favorite_car"`
+		FavoriteTrack struct {
+			ConfigName string `json:"config_name"`
+			TrackID    int    `json:"track_id"`
+			TrackLogo  string `json:"track_logo"`
+			TrackName  string `json:"track_name"`
+		} `json:"favorite_track"`
+	} `json:"stats"`
+	Success bool `json:"success"`
+	Season  int  `json:"season"`
+	CustID  int  `json:"cust_id"`
+}
+
+// World Records
+
+type StatsWorldRecordsReq struct {
+	ChunkReq      ChunkReq
+	CarID         int `url:"car_id"`
+	TrackID       int `url:"track_id"`
+	SeasonYear    int `url:"season_year,omitempty"`
+	SeasonQuarter int `url:"season_quarter,omitempty"`
+}
+
+type StatsWorldRecordsResp struct {
+	CustID        int    `json:"cust_id"`
+	DisplayName   string `json:"display_name"`
+	CarID         int    `json:"car_id"`
+	TrackID       int    `json:"track_id"`
+	SeasonYear    int    `json:"season_year"`
+	SeasonQuarter int    `json:"season_quarter"`
+	CountryCode   string `json:"country_code"`
+	Region        string `json:"region"`
+	License       struct {
+		CategoryID   int     `json:"category_id"`
+		Category     string  `json:"category"`
+		LicenseLevel int     `json:"license_level"`
+		SafetyRating float64 `json:"safety_rating"`
+		Irating      int     `json:"irating"`
+		TtRating     int     `json:"tt_rating"`
+		GroupName    string  `json:"group_name"`
+		GroupID      int     `json:"group_id"`
+	} `json:"license"`
+	PracticeLapTime int       `json:"practice_lap_time"`
+	PracticeDate    time.Time `json:"practice_date"`
+	QualifyLapTime  int       `json:"qualify_lap_time"`
+	QualifyDate     time.Time `json:"qualify_date"`
+	TtLapTime       int       `json:"tt_lap_time"`
+	TtDate          time.Time `json:"tt_date"`
+	RaceLapTime     int       `json:"race_lap_time"`
+	RaceDate        time.Time `json:"race_date"`
+}
+
+// Season Qualify Results
+
+type StatsSeasonQualifyResultsReq struct {
+	SeasonID    int `url:"season_id"`
+	CarClassID  int `url:"car_class_id"`
+	RaceWeekNum int `url:"race_week_num,omitempty"`
+	Division    int `url:"division,omitempty"`
+}
+
+// Season Driver Standings
+
+type StatsSeasonDriverStandingsReq struct {
+	SeasonID    int `url:"season_id"`
+	CarClassID  int `url:"car_class_id"`
+	RaceWeekNum int `url:"race_week_num"`
+	Division    int `url:"division,omitempty"`
+}
+
+// Season Driver Standings
+
+type StatsSeasonSupersessionStandingsReq struct {
+	SeasonID    int `url:"season_id"`
+	CarClassID  int `url:"car_class_id"`
+	RaceWeekNum int `url:"race_week_num"`
+	Division    int `url:"division,omitempty"`
+}
+
+// Season TT Standings
+
+type StatsSeasonTTStandingsReq struct {
+	SeasonID    int `url:"season_id"`
+	CarClassID  int `url:"car_class_id"`
+	RaceWeekNum int `url:"race_week_num,omitempty"`
+	Division    int `url:"division,omitempty"`
+}
+
+// Season TT Results
+
+type StatsSeasonTTResultsReq struct {
+	SeasonID    int `url:"season_id"`
+	CarClassID  int `url:"car_class_id"`
+	RaceWeekNum int `url:"race_week_num"`
+	Division    int `url:"division,omitempty"`
+}

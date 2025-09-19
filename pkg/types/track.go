@@ -69,3 +69,30 @@ type TrackGetResp struct {
 	NominalLapTime float64 `json:"nominal_lap_time,omitempty"`
 	Banking        string  `json:"banking,omitempty"`
 }
+
+// Assets
+
+type TrackAssetsReq struct{}
+
+type TrackAssetsResp map[string]struct {
+	Coordinates    string `json:"coordinates"`
+	DetailCopy     string `json:"detail_copy"`
+	Folder         string `json:"folder"`
+	GalleryImages  string `json:"gallery_images"`
+	GalleryPrefix  string `json:"gallery_prefix"`
+	LargeImage     string `json:"large_image"`
+	Logo           string `json:"logo"`
+	North          string `json:"north"`
+	NumSvgImages   int    `json:"num_svg_images"`
+	SmallImage     string `json:"small_image"`
+	TrackID        int    `json:"track_id"`
+	TrackMap       string `json:"track_map"`
+	TrackMapLayers struct {
+		Background  string `json:"background"`
+		Inactive    string `json:"inactive"`
+		Active      string `json:"active"`
+		Pitroad     string `json:"pitroad"`
+		StartFinish string `json:"start-finish"`
+		Turns       string `json:"turns"`
+	} `json:"track_map_layers"`
+}

@@ -7,12 +7,15 @@ import (
 	"os"
 	"time"
 
+	"github.com/cazeaux/go-iracing/cmd/config"
+	"github.com/cazeaux/go-iracing/cmd/store"
 	"github.com/cazeaux/go-iracing/pkg/iracing"
 	"github.com/cazeaux/go-iracing/pkg/types"
 )
 
 func main() {
 	ctx := context.Background()
+	logger := config.Logger()
 	email := os.Getenv("IR_EMAIL")
 	password := os.Getenv("IR_PASSWORD")
 	clientID := os.Getenv("IR_CLIENT_ID")
@@ -25,7 +28,7 @@ func main() {
 		log.Fatalf("new client: %v", err)
 	}
 
-	// getMemberInfo(client, ctx)
+	getMemberInfo(client, ctx)
 	// getMemberRecentResult(client, ctx, 394410)
 	// getCars(client, ctx)
 	// getTracks(client, ctx)
@@ -39,7 +42,34 @@ func main() {
 	// getHostedSessions(client, ctx)
 	// getMemberAwards(client, ctx)
 	// getSeasonQualifyResults(client, ctx)
-	getSeasonDriverStandings(client, ctx)
+	// getSeasonDriverStandings(client, ctx)
+
+	botConfig, err := config.LoadConfig("../config")
+	if err != nil {
+		logger.Error("failed to load config")
+		panic("")
+	}
+	wc := make(chan store.Message)
+	filestore := store.FileStore{
+		Path: "../cache",
+	}
+	dataStore := store.NewDataStore(logger, wc, &filestore)
+
+	message := store.Message{
+		Data: &store.Data{
+			LastResultTimestamp: time.Now(),
+		},
+		User: &botConfig.Users[0],
+	}
+	data, _ := store.Get(dataStore, &botConfig.Users[0])
+	fmt.Printf("data: %v", data)
+
+	go store.WriterRoutine(ctx, dataStore)
+
+	wc <- message
+
+	for {
+	}
 
 }
 

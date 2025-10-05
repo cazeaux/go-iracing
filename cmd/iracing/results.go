@@ -230,8 +230,12 @@ func buildRaceResult(race *types.RecentRace, subsession *types.ResultsGetResp, u
 	}
 
 	// Logos
-	raceResult.CarLogo = (*assetsCache.Cars)[string(raceResult.CarID)].Logo
-	raceResult.SeriesLogo = (*assetsCache.Cars)[string(raceResult.SeriesID)].Logo
+	if carAsset, ok := assetsCache.GetCarAsset(raceResult.CarID); ok {
+		raceResult.CarLogo = carAsset.Logo
+	}
+	if seriesAsset, ok := assetsCache.GetSeriesAsset(raceResult.SeriesID); ok {
+		raceResult.SeriesLogo = seriesAsset.Logo
+	}
 
 	return &raceResult, nil
 }

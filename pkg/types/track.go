@@ -74,7 +74,9 @@ type TrackGetResp struct {
 
 type TrackAssetsReq struct{}
 
-type TrackAssetsResp map[string]struct {
+type TrackAssetsResp map[string]TrackAsset
+
+type TrackAsset struct {
 	Coordinates    string `json:"coordinates"`
 	DetailCopy     string `json:"detail_copy"`
 	Folder         string `json:"folder"`

@@ -186,7 +186,9 @@ type SeriesStatsSeriesResp struct {
 
 type SeriesAssetsReq struct{}
 
-type SeriesAssetsResp map[string]struct {
+type SeriesAssetsResp map[string]SeriesAsset
+
+type SeriesAsset struct {
 	LargeImage string `json:"large_image"`
 	Logo       string `json:"logo"`
 	SeriesCopy string `json:"series_copy"`

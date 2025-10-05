@@ -90,7 +90,9 @@ type CarsGetResp struct {
 	SiteURL string `json:"site_url,omitempty"`
 }
 
-type CarsAssetsResp map[string]struct {
+type CarsAssetsResp map[string]CarAsset
+
+type CarAsset struct {
 	CarID                  int    `json:"car_id"`
 	CarRules               []any  `json:"car_rules"`
 	DetailCopy             string `json:"detail_copy"`

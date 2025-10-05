@@ -2,6 +2,7 @@ package iracing
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/cazeaux/go-iracing/pkg/iracing"
@@ -21,6 +22,39 @@ func (c *IracingAssetsCache) IsExpired() bool {
 		return true
 	}
 	return time.Since(c.LastRefresh) > c.Expiry
+}
+
+func (c *IracingAssetsCache) GetCarAsset(carID int) (*types.CarAsset, bool) {
+	if c.Cars == nil {
+		return nil, false
+	}
+	carAsset, ok := (*c.Cars)[strconv.Itoa(carID)]
+	if !ok {
+		return nil, false
+	}
+	return &carAsset, true
+}
+
+func (c *IracingAssetsCache) GetTrackAsset(trackID int) (*types.TrackAsset, bool) {
+	if c.Tracks == nil {
+		return nil, false
+	}
+	trackAsset, ok := (*c.Tracks)[strconv.Itoa(trackID)]
+	if !ok {
+		return nil, false
+	}
+	return &trackAsset, true
+}
+
+func (c *IracingAssetsCache) GetSeriesAsset(seriesID int) (*types.SeriesAsset, bool) {
+	if c.Series == nil {
+		return nil, false
+	}
+	seriesAsset, ok := (*c.Series)[strconv.Itoa(seriesID)]
+	if !ok {
+		return nil, false
+	}
+	return &seriesAsset, true
 }
 
 func NewIracingAssetsCache(expiry time.Duration) *IracingAssetsCache {

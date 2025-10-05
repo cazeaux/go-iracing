@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path"
+	"strconv"
 
 	"github.com/cazeaux/go-iracing/cmd/config"
 )
@@ -14,7 +15,7 @@ type FileStore struct {
 
 func (f *FileStore) Writer(u *config.User, data *Data) error {
 
-	filename := path.Join(f.Path, u.ID)
+	filename := path.Join(f.Path, strconv.Itoa(u.ID))
 
 	fd, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
@@ -37,12 +38,12 @@ func (f *FileStore) Writer(u *config.User, data *Data) error {
 
 func (f *FileStore) Reader(u *config.User) (*Data, error) {
 
-	filename := path.Join(f.Path, u.ID)
+	filename := path.Join(f.Path, strconv.Itoa(u.ID))
 
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		return nil, nil
 	}
-	
+
 	text, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err

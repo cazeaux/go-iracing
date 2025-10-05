@@ -10,6 +10,7 @@ import (
 
 type Data struct {
 	LastResultTimestamp time.Time `json:"lastResultTimestamp"`
+	LastSubSessionID    int       `json:"lastSubSessionID"`
 }
 
 type Message struct {
@@ -23,12 +24,12 @@ type DataStoreReaderWriter interface {
 }
 
 type DataStore struct {
-	WriterChannel <-chan Message
+	WriterChannel chan Message
 	Store         DataStoreReaderWriter
 	Logger        *slog.Logger
 }
 
-func NewDataStore(l *slog.Logger, w <-chan Message, s DataStoreReaderWriter) *DataStore {
+func NewDataStore(l *slog.Logger, w chan Message, s DataStoreReaderWriter) *DataStore {
 	return &DataStore{
 		WriterChannel: w,
 		Store:         s,
@@ -61,6 +62,7 @@ func Get(d *DataStore, u *config.User) (*Data, error) {
 		d.Logger.Info("user data cache does not exit", "user", u.ID)
 		data = &Data{
 			LastResultTimestamp: time.Now(),
+			LastSubSessionID:    0,
 		}
 	}
 

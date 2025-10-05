@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/cazeaux/go-iracing/cmd/config"
@@ -16,16 +15,22 @@ import (
 func main() {
 	ctx := context.Background()
 	logger := config.Logger()
-	email := os.Getenv("IR_EMAIL")
-	password := os.Getenv("IR_PASSWORD")
-	clientID := os.Getenv("IR_CLIENT_ID")
-	clientSecret := os.Getenv("IR_CLIENT_SECRET")
+	botConfig, err := config.LoadConfig("../config")
+	if err != nil {
+		logger.Error("failed to load config")
+		panic("")
+	}
+
 	client, err := iracing.NewClient(
 		// iracing.WithAuthenticator(iracing.NewIrLegacyAuth(email, password)),
-		iracing.WithAuthenticator(iracing.NewIrOAuth(email, password, clientID, clientSecret)),
+		iracing.WithAuthenticator(iracing.NewIrOAuth(
+			botConfig.Env.Email, botConfig.Env.Password,
+			botConfig.Env.ClientID, botConfig.Env.ClientSecret)),
 	)
+
 	if err != nil {
-		log.Fatalf("new client: %v", err)
+		logger.Error("failed to initialize iracing client: %v", err)
+		panic("")
 	}
 
 	getMemberInfo(client, ctx)
@@ -44,11 +49,6 @@ func main() {
 	// getSeasonQualifyResults(client, ctx)
 	// getSeasonDriverStandings(client, ctx)
 
-	botConfig, err := config.LoadConfig("../config")
-	if err != nil {
-		logger.Error("failed to load config")
-		panic("")
-	}
 	wc := make(chan store.Message)
 	filestore := store.FileStore{
 		Path: "../cache",
@@ -107,7 +107,7 @@ func getTracks(c *iracing.Client, ctx context.Context) {
 }
 
 func lookupLicenses(c *iracing.Client, ctx context.Context) {
-	data, resp, err := c.LookupService.Licenses(ctx, nil)
+	data, resp, err := c.Lookup.Licenses(ctx, nil)
 	if err != nil {
 		log.Fatalf("lookup licenses failed: %v", err)
 	}
@@ -151,7 +151,7 @@ func getSeriesSeasons(c *iracing.Client, ctx context.Context) {
 	req := &types.SeriesSeasonsReq{
 		IncludeSeries: true,
 	}
-	results, _, err := c.SeriesService.Seasons(ctx, req)
+	results, _, err := c.Series.Seasons(ctx, req)
 	if err != nil {
 		log.Fatalf("list results failed: %v", err)
 	}
@@ -162,7 +162,7 @@ func getStatsSeries(c *iracing.Client, ctx context.Context) {
 	req := &types.SeriesStatsSeriesReq{
 		Official: true,
 	}
-	results, _, err := c.SeriesService.StatsSeries(ctx, req)
+	results, _, err := c.Series.StatsSeries(ctx, req)
 	if err != nil {
 		log.Fatalf("list results failed: %v", err)
 	}
@@ -171,7 +171,7 @@ func getStatsSeries(c *iracing.Client, ctx context.Context) {
 
 func getDriverStats(c *iracing.Client, ctx context.Context) {
 
-	results, _, err := c.DriverStatsService.Oval(ctx)
+	results, _, err := c.DriverStats.Oval(ctx)
 	if err != nil {
 		log.Fatalf("list results failed: %v", err)
 	}
@@ -180,7 +180,7 @@ func getDriverStats(c *iracing.Client, ctx context.Context) {
 
 func getHostedCombinedSessions(c *iracing.Client, ctx context.Context) {
 	req := types.HostedCombinedSessionsReq{}
-	results, _, err := c.HostedService.CombinedSessions(ctx, req)
+	results, _, err := c.Hosted.CombinedSessions(ctx, req)
 	if err != nil {
 		log.Fatalf("list results failed: %v", err)
 	}
@@ -189,7 +189,7 @@ func getHostedCombinedSessions(c *iracing.Client, ctx context.Context) {
 
 func getHostedSessions(c *iracing.Client, ctx context.Context) {
 	req := types.HostedSessionsReq{}
-	results, _, err := c.HostedService.Sessions(ctx, req)
+	results, _, err := c.Hosted.Sessions(ctx, req)
 	if err != nil {
 		log.Fatalf("list results failed: %v", err)
 	}
@@ -198,7 +198,7 @@ func getHostedSessions(c *iracing.Client, ctx context.Context) {
 
 func getMemberAwards(c *iracing.Client, ctx context.Context) {
 	req := types.MemberAwardsReq{CustID: 394410}
-	results, _, err := c.MemberService.Awards(ctx, &req)
+	results, _, err := c.Member.Awards(ctx, &req)
 	if err != nil {
 		log.Fatalf("list results failed: %v", err)
 	}

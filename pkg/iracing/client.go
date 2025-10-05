@@ -46,12 +46,11 @@ type Client struct {
 	Results            *ResultsService
 	CarClass           *CarClassService
 	ConstantsDivisions *ConstantsService
-	LeagueService      *LeagueService
-	LookupService      *LookupService
-	SeriesService      *SeriesService
-	DriverStatsService *DriverStatsService
-	HostedService      *HostedService
-	MemberService      *MemberService
+	League             *LeagueService
+	Lookup             *LookupService
+	Series             *SeriesService
+	DriverStats        *DriverStatsService
+	Hosted             *HostedService
 }
 
 // NewClient crée une nouvelle instance Client.
@@ -84,12 +83,11 @@ func NewClient(opts ...Option) (*Client, error) {
 	c.Results = &ResultsService{client: c}
 	c.CarClass = &CarClassService{client: c}
 	c.ConstantsDivisions = &ConstantsService{client: c}
-	c.LeagueService = &LeagueService{client: c}
-	c.LookupService = &LookupService{client: c}
-	c.SeriesService = &SeriesService{client: c}
-	c.DriverStatsService = &DriverStatsService{client: c}
-	c.HostedService = &HostedService{client: c}
-	c.MemberService = &MemberService{client: c}
+	c.League = &LeagueService{client: c}
+	c.Lookup = &LookupService{client: c}
+	c.Series = &SeriesService{client: c}
+	c.DriverStats = &DriverStatsService{client: c}
+	c.Hosted = &HostedService{client: c}
 	return c, nil
 }
 

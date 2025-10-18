@@ -3,7 +3,7 @@ package types
 type SessionType int
 
 const (
-	SessionTypePractice      SessionType = 1
-	SessionTypeQualification SessionType = 2
-	SessionTypeRace          SessionType = 3
+	SessionTypePractice      SessionType = 3
+	SessionTypeQualification SessionType = 4
+	SessionTypeRace          SessionType = 6
 )

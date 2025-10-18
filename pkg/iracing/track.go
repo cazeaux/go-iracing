@@ -24,7 +24,7 @@ func (s *TrackService) Get(ctx context.Context, _ *types.TrackGetReq) ([]types.T
 }
 
 func (s *TrackService) Assets(ctx context.Context, _ *types.TrackAssetsReq) (*types.TrackAssetsResp, *http.Response, error) {
-	path := "/data/track/get"
+	path := "/data/track/assets"
 	var infoResp types.TrackAssetsResp
 
 	respData, err := s.client.getRessourceJSON(ctx, path, nil, &infoResp)

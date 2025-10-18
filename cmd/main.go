@@ -4,72 +4,57 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
-	"github.com/cazeaux/go-iracing/cmd/config"
-	"github.com/cazeaux/go-iracing/cmd/store"
 	"github.com/cazeaux/go-iracing/pkg/iracing"
 	"github.com/cazeaux/go-iracing/pkg/types"
 )
 
+type ConfigEnv struct {
+	Email        string
+	Password     string
+	ClientID     string
+	ClientSecret string
+}
+
 func main() {
 	ctx := context.Background()
-	logger := config.Logger()
-	botConfig, err := config.LoadConfig("../config")
-	if err != nil {
-		logger.Error("failed to load config")
-		panic("")
+
+	configEnv := ConfigEnv{
+		Email:        os.Getenv("IR_EMAIL"),
+		Password:     os.Getenv("IR_PASSWORD"),
+		ClientID:     os.Getenv("IR_CLIENT_ID"),
+		ClientSecret: os.Getenv("IR_CLIENT_SECRET"),
 	}
 
 	client, err := iracing.NewClient(
-		// iracing.WithAuthenticator(iracing.NewIrLegacyAuth(email, password)),
+		// iracing.WithAuthenticator(iracing.NewIrLegacyAuth(configEnv.Email, configEnv.Password)),
 		iracing.WithAuthenticator(iracing.NewIrOAuth(
-			botConfig.Env.Email, botConfig.Env.Password,
-			botConfig.Env.ClientID, botConfig.Env.ClientSecret)),
+			configEnv.Email, configEnv.Password,
+			configEnv.ClientID, configEnv.ClientSecret)),
 	)
 
 	if err != nil {
-		logger.Error("failed to initialize iracing client: %v", err)
-		panic("")
+		fmt.Printf("failed to initialize iracing client: %v", err)
+		return
 	}
 
 	getMemberInfo(client, ctx)
-	// getMemberRecentResult(client, ctx, 394410)
-	// getCars(client, ctx)
-	// getTracks(client, ctx)
-	// getResultsSearchSeries(client, ctx, 394410)
-	// lookupLicenses(client, ctx)
-	// getResultsGet(client, ctx, 78354169)
-	// getSeriesSeasons(client, ctx)
-	// getStatsSeries(client, ctx)
-	// getDriverStats(client, ctx)
-	// getHostedCombinedSessions(client, ctx)
-	// getHostedSessions(client, ctx)
-	// getMemberAwards(client, ctx)
-	// getSeasonQualifyResults(client, ctx)
-	// getSeasonDriverStandings(client, ctx)
-
-	wc := make(chan store.Message)
-	filestore := store.FileStore{
-		Path: "../cache",
-	}
-	dataStore := store.NewDataStore(logger, wc, &filestore)
-
-	message := store.Message{
-		Data: &store.Data{
-			LastResultTimestamp: time.Now(),
-		},
-		User: &botConfig.Users[0],
-	}
-	data, _ := store.Get(dataStore, &botConfig.Users[0])
-	fmt.Printf("data: %v", data)
-
-	go store.WriterRoutine(ctx, dataStore)
-
-	wc <- message
-
-	for {
-	}
+	getMemberRecentResult(client, ctx, 394410)
+	getCars(client, ctx)
+	getTracks(client, ctx)
+	getResultsSearchSeries(client, ctx, 394410)
+	lookupLicenses(client, ctx)
+	getResultsGet(client, ctx, 78354169)
+	getSeriesSeasons(client, ctx)
+	getStatsSeries(client, ctx)
+	getDriverStats(client, ctx)
+	getHostedCombinedSessions(client, ctx)
+	getHostedSessions(client, ctx)
+	getMemberAwards(client, ctx)
+	getSeasonQualifyResults(client, ctx)
+	getSeasonDriverStandings(client, ctx)
 
 }
 

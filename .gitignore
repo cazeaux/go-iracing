@@ -1,0 +1,9 @@
+/bin/
+/vendor/
+*.exe
+*.log
+.DS_Store
+.vscode
+/config
+/cache
+/bruno

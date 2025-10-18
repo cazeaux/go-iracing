@@ -185,7 +185,7 @@ type SessionWeatherResult struct {
 	MinWindSpeed             float64 `json:"min_wind_speed"`
 	MaxWindSpeed             float64 `json:"max_wind_speed"`
 	AvgWindDir               int     `json:"avg_wind_dir"`
-	MaxFog                   int     `json:"max_fog"`
+	MaxFog                   float64 `json:"max_fog"`
 	FogTimePct               float64 `json:"fog_time_pct"`
 	PrecipTimePct            float64 `json:"precip_time_pct"`
 	PrecipMm                 float64 `json:"precip_mm"`

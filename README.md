@@ -17,7 +17,7 @@ Features
 
 ### iRacing legacy authentication
 
-The API supports the legacy authentication which relies on the `` endpoint.
+The API supports the legacy authentication.
 
 > This legacy authentication endpoint is deprecated, and can be disabled soon by iRacing (seen [announcement](https://forums.iracing.com/discussion/84226/legacy-authentication-removal-dec-9-2025/p1)). I encourage to move directly to the new method. However the new method requires to request credentials from iRacing staff, thus the legacy method can be used as a quick start, waiting for the credentials.
 

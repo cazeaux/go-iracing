@@ -81,7 +81,8 @@ func (a *IrOauthService) DoLogin(ctx context.Context, c *Client) error {
 		Scope:        "iracing.auth",
 	}
 
-	if err := c.throttle(ctx); err != nil {
+	err := c.throttle(ctx)
+	if err != nil {
 		return err
 	}
 
@@ -102,17 +103,23 @@ func (a *IrOauthService) DoLogin(ctx context.Context, c *Client) error {
 	if err != nil {
 		return err
 	}
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode >= 400 {
 		body, _ := io.ReadAll(resp.Body)
-		_ = resp.Body.Close()
 		return fmt.Errorf("oauth login failed: %v %s", resp.StatusCode, body)
 	}
 
 	var authResp IrOAuthResp
-	body, _ := io.ReadAll(resp.Body)
-	_ = json.Unmarshal(body, &authResp)
-	_ = resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(body, &authResp)
+	if err != nil {
+		return err
+	}
 
 	a.token = authResp.AccessToken
 	a.refreshToken = authResp.RefreshToken

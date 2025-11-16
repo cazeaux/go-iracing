@@ -116,8 +116,10 @@ func doLogin(ctx context.Context, c *Client, username, password string) (string,
 
 	var authResp IrAuthResp
 	data, _ := io.ReadAll(resp.Body)
-	_ = json.Unmarshal(data, &authResp)
-	_ = resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
+	if err := json.Unmarshal(data, &authResp); err != nil {
+		return "", err
+	}
 
 	return authResp.SsoCookieValue, nil
 }

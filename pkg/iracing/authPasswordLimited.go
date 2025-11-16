@@ -111,8 +111,10 @@ func (a *IrOauthService) DoLogin(ctx context.Context, c *Client) error {
 
 	var authResp IrOAuthResp
 	body, _ := io.ReadAll(resp.Body)
-	_ = json.Unmarshal(body, &authResp)
-	_ = resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
+	if err := json.Unmarshal(body, &authResp); err != nil {
+		return err
+	}
 
 	a.token = authResp.AccessToken
 	a.refreshToken = authResp.RefreshToken
